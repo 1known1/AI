@@ -39,12 +39,12 @@ def solve_n_queens(N):
     return solutions
 def print_solutions(solutions):
     for idx,solution in enumerate(solutions):
-        print(f"solution {idx+1}:")
+        print(f"No Cheating....")
         for row in solution:
             print(row)
         print()
 if __name__=="__main__":
     N=4
     solutions=solve_n_queens(N)
-    print(f"Found {len(solutions)} solution for {N}-Queens problem:")
+    print(f"No Cheating....")
     print_solutions(solutions)
