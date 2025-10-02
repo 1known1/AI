@@ -1,0 +1,70 @@
+from collections import deque
+class State:
+    def __init__(self,missionaries,cannibals,boat,path=None):
+        self.m=missionaries
+        self.c=cannibals
+        self.boat=boat
+        self.path=path or []
+
+
+    def is_valid(self):
+        if self.m<0 or self.c<0 or self.m>3 or self.c>3:
+            return False
+        if(self.m>0 and self.m<self.c)or(3-self.m>0 and 3-self.m<3-self.c):
+            return False
+        return True
+
+
+    def is_goal(self):
+        return self.m==0 and self.c==0 and self.boat=='right'
+
+
+    def get_successors(self):
+        successors=[]
+        moves=[(1,0),(2,0),(0,1),(0,2),(1,1)]
+
+
+        for m ,c in moves:
+            if self.boat=='left':
+                new_state=State(self.m-m,self.c-c,'right',self.path+[self])
+            else:
+                new_state=State(self.m+m,self.c+c,'left',self.path+[self])
+            if new_state.is_valid():
+                successors.append(new_state)
+        return successors
+
+
+    def __eq__(self,other):
+        return (self.m,self.c,self.boat)==(other.m,other.c,other.boat)
+    def __hash__(self):
+        return hash((self.m,self.c,self.boat))
+    def __str__(self):
+        return f"({self.m},{self.c},{self.boat})"
+
+
+def solve():
+    start=State(3,3,'left')
+    queue=deque([start])
+    visited=set()
+    while queue:
+        current=queue.popleft()
+        if current in visited:
+            continue
+        visited.add(current)
+
+
+        if current.is_goal():
+            solution_path=current.path+[current]
+            print("Solution Found!\nSteps:")
+            for step in solution_path:
+                print(step)
+            return
+        
+        for successor in current.get_successors():
+            if successor not in visited:
+                queue.append(successor)
+    print("No Solution Found!")
+
+
+if __name__=='__main__':
+    solve()
