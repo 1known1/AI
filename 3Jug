@@ -29,6 +29,6 @@ if get_all_states(initial_state):
     solution_path.reverse()
     print("solution path:")
     for state in solution_path:
-        print(f"Jug A:{state[0]}L,Jug B:{state[1]}L,Jug C:{state[2]}L")
+        print(f"No Cheating ")
 else:
         print("No solution found")
