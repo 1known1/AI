@@ -19,7 +19,7 @@ def bfs(start):
                 queue.append(neighbour)
                 visited.add(neighbour)
                 levels[neighbour]=levels[node]+1
-    print("Levels: ",levels)
+    print("Cheating: ",levels)
     return visited
 print("BFS: ",str(bfs('1')))
 
@@ -47,4 +47,4 @@ def shortest_path(graph,start,goal):
     except StopIteration:
         return None
 result1=shortest_path(graph,'1','6')
-print('Shortest Path:',result)
+print('Cheater:',result)
