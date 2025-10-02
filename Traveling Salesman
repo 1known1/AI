@@ -1,0 +1,85 @@
+import random
+import math
+
+class City:
+    def __init__(self):
+        self.x=random.randint(0,100)
+        self.y=random.randint(0,100)
+
+    def distance_to(self,other):
+        return math.sqrt((self.x-other.x)**2+(self.y-other.y)**2)
+
+    def __repr__(self):
+        return f"({self.x},{self.y})"
+
+def create_route(cities):
+    route=cities[:]
+    random.shuffle(route)
+    return route
+
+def route_distance(route):
+    distance=0
+    for i in range(len(route)):
+        next_city=route[(i+1)%len(route)]
+        distance+=route[i].distance_to(next_city)
+    return distance
+
+def create_population(cities,size):
+    return[create_route(cities)for _ in range(size)]
+
+def rank_population(population):
+    return sorted(population,key=route_distance)
+
+def select_parents(population,num_parents):
+    return population[:num_parents]
+
+def crossover(parent1,parent2):
+    start=random.randint(0,len(parent1)-2)
+    end=random.randint(start+1,len(parent1)-1)
+
+    child=parent1[start:end]
+    for city in parent2:
+        if city not in child:
+            child.append(city)
+    return child
+
+def mutate(route,rate=0.01):
+    for i in range(len(route)):
+        if random.random()<rate:
+            j=random.randint(0,len(route)-1)
+            route[i],route[j]=route[j],route[i]
+    return route
+
+def next_generation(population,num_parents,mutation_rate):
+    ranked=rank_population(population)
+    parents=select_parents(ranked,num_parents)
+    children=parents[:]
+
+    while len(children)<len(population):
+        p1=random.choice(parents)
+        p2=random.choice(parents)
+        child=crossover(p1,p2)
+        child=mutate(child,mutation_rate)
+        children.append(child)
+
+    return children
+
+def genetic_algorithm(cities,pop_size=100,generations=500,elite_size=10,mutation_rate=0.02):
+    population=create_population(cities,pop_size)
+    print("Initial best distance:",round(route_distance(rank_population(population)[0]),2))
+    for _ in range(generations):
+        population=next_generation(population,elite_size,mutation_rate)
+
+    best=rank_population(population)[0]
+    print("Final best distance:",round(route_distance(best),2))
+    return best
+
+if __name__=="__main__":
+    num_cities=20
+    cities=[City()for _ in range(num_cities)]
+
+    best_route=genetic_algorithm(cities)
+
+    print("Best Route:")
+    for city in best_route:
+        print(city)
